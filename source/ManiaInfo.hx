@@ -26,18 +26,18 @@ class ManiaInfo
 		'violet' => "DOWN",
 		'darkred' => "UP",
 		'dark' => "RIGHT",
-		'21la' => "SPACE",
-		'21lb' => "TRILEFT",
-		'21lc' => "TRIDOWN",
-		'21ld' => "TRIUP",
-		'21le' => "TRIRIGHT",
-		'21lf' => "SPACE",
-		'21ra' => "SPACE",
-		'21rb' => "TRILEFT",
-		'21rc' => "TRIDOWN",
-		'21rd' => "TRIUP",
-		'21re' => "TRIRIGHT",
-		'21rf' => "SPACE",
+		'21la' => "TRILEFT",
+		'21lb' => "TRIUP",
+		'21lc' => "TRIRIGHT",
+		'21ld' => "TRILEFT",
+		'21le' => "TRIDOWN",
+		'21lf' => "TRIRIGHT",
+		'21ra' => "TRILEFT",
+		'21rb' => "TRIUP",
+		'21rc' => "TRIRIGHT",
+		'21rd' => "TRILEFT",
+		'21re' => "TRIDOWN",
+		'21rf' => "TRIRIGHT",
 		'13a' => "TRILEFT",
 		'13b' => "TRIDOWN",
 		'13c' => "TRIUP",
@@ -144,7 +144,6 @@ class ManiaInfo
 			return {
 				keys: 6,
 				arrows: ['purple', 'green', 'red', 'yellow', 'blue', 'dark'], //apparently that causes crashing as well
-				//arrows: ['purple', '13a', '13b', '13c', '13d', 'dark'], //just wanna see the key graphics Existing (since for some reason my custom manias crash the game and there is no way of seeing crash logs apparently)
 				controls: ["L1", "U1", "R1", "L2", "D1", "R2"],
 				arrowkeys: [37 => 3, 40 => 4, 39 => 5]
 			};
@@ -195,7 +194,7 @@ class ManiaInfo
 				keys: 3,
 				arrows: ['purple', 'white', 'red'],
 				controls: ["LEFT", "N4", "RIGHT"],
-				arrowkeys: [37 => 0, 39 => 2]
+				arrowkeys: [37 => 0, 38 => 1, 39 => 2] //added down arrow for middle button
 			};
 			case 20: //13K
 			return {
@@ -247,11 +246,11 @@ class ManiaInfo
 					'yellow', 'blue', 'dark'
 				],
 				/*arrows: [
-					'21ld', '21le', '21lf',
+					'21la', '21lb', '21lc',
 					'purple', 'blue', 'green', 'red', 
 					'13a', '13b', 'white', '13c', '13d',
 					'yellow', 'violet', 'darkred', 'dark',
-					'21ra', '21rb', '21rc'
+					'21rd', '21re', '21rf'
 				],*/
 				controls: [
 					"L1", "U1", "R1", 
@@ -260,7 +259,7 @@ class ManiaInfo
 					"N5", "N6", "N7", "N8",
 					"L2", "D1", "R2"
 				],
-				arrowkeys: [37 => 7, 40 => 8, 38 => 10, 39 => 11] //no arrow keys
+				arrowkeys: [37 => 7, 40 => 8, 38 => 10, 39 => 11]
 			};
 			//also add combined 19k and 21k (but wHYYY you are squeezing this game to death)
 			case 24: //50k (this actually not controllable)
@@ -276,13 +275,18 @@ class ManiaInfo
 					'purple', 'blue', 'green', 'red', 'white', 'white', 'yellow', 'violet', 'darkred', 'dark'
 				],
 				/*arrows: [
-					'21ld', '21le', '21lf',
-					'purple', 'blue', 'green', 'red', 
-					'13a', '13b', 'white', '13c', '13d',
+					'21la', '21lb', '21lc', '21ld', '21le', '21lf',
+					'purple', 'blue', 'green', 'red',
 					'yellow', 'violet', 'darkred', 'dark',
-					'21ra', '21rb', '21rc'
+					'13a', '13b', 'white', '13c', '13d',
+					'purple', 'green', 'red', '21la', '21lb', '21lc', '21ld', '21le', '21lf', 'yellow', 'blue', 'dark',
+					'13a', '13b', 'white', '13c', '13d',
+					'purple', 'blue', 'green', 'red',
+					'yellow', 'violet', 'darkred', 'dark',
+					'21ra', '21rb', '21rc', '21rd', '21re', '21rf'
 				],*/
 				controls: ["no"], //just use botplay
+				//or maybe i can put some midi keyboard support
 				arrowkeys: [-1 => 0] //no arrow keys
 			}; //also add combined 19k and 21k (this game not alive)
 		};
