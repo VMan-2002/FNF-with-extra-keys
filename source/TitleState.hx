@@ -33,6 +33,11 @@ import Discord.DiscordClient;
 
 #if cpp
 import sys.thread.Thread;
+
+#end
+
+#if desktop
+	import flash.system.System;
 #end
 
 using StringTools;
@@ -154,15 +159,26 @@ class TitleState extends MusicBeatState
 			// https://github.com/HaxeFlixel/flixel-addons/pull/348
 
 			// var music:FlxSound = new FlxSound();
-			// music.loadStream(Paths.music('freakyMenu'));
+			// music.loadStream(Paths.returnSongFile(FlxG.save.data.SavedMenuMusic));
 			// FlxG.sound.list.add(music);
 			// music.play();
-			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+			
+			#if cpp
+			//check that menu music still exists
+			//if (!assets.exists(FlxG.save.data.SavedMenuMusic + "." + SOUND_EXT)) {
+			//	FlxG.save.data.SavedMenuMusic = "assets/music/freakyMenu";
+			//}
+			#end
+			
+			FlxG.sound.playMusic(Paths.returnSongFile(FlxG.save.data.SavedMenuMusic), 0);
 
 			FlxG.sound.music.fadeIn(4, 0, 0.7);
 		}
 
 		Conductor.changeBPM(102);
+		
+		//If a song is set as menu music, set it's bpm
+		SetMenuBpm();
 		persistentUpdate = true;
 
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
@@ -290,6 +306,13 @@ class TitleState extends MusicBeatState
 			}
 		}
 		#end
+		
+		#if desktop
+		if (FlxG.keys.pressed.ESCAPE && !transitioning) {
+			trace('Exiting game');
+			System.exit(0);
+		}
+		#end
 
 		if (pressedEnter && !transitioning && skippedIntro)
 		{
@@ -397,6 +420,12 @@ class TitleState extends MusicBeatState
 			gfDance.animation.play('danceLeft');
 
 		FlxG.log.add(curBeat);
+		
+		//meant to prevent crashes when returning to title screen
+		//but it stops the intro
+		/*if (!skippedIntro && MainMenuState.firstStart) {
+			return skipIntro();
+		}*/
 
 		switch (curBeat)
 		{
@@ -476,5 +505,32 @@ class TitleState extends MusicBeatState
 			remove(credGroup);
 			skippedIntro = true;
 		}
+	}
+	
+	public static function SetMenuBpm() {
+		if (StringTools.contains(FlxG.save.data.SavedMenuMusic, "assets/songs/") && StringTools.endsWith(FlxG.save.data.SavedMenuMusic, "/Inst")) {
+			var songjson:String = StringTools.replace(FlxG.save.data.SavedMenuMusic, "assets/songs/", "assets/data/");
+			var songnamei:Int = songjson.indexOf("/Inst");
+			songjson = StringTools.replace(songjson, "/Inst", songjson.substring(12, songnamei) + "-hard.json");
+			trace(songjson);
+			if (StringTools.endsWith(songjson, "-hard.json")) {
+				trace('can find chart for bpm!');
+				var songname:String = songjson.substring(12, songnamei);
+				var songbpm:Float = Song.loadFromJson(songname+"-hard", songname).bpm;
+				while (songbpm > 140) {
+					songbpm /= 2;
+				}
+				while (songbpm < 75) {
+					songbpm *= 2;
+				}
+				Conductor.changeBPM(songbpm);
+			}
+		}
+	}
+	
+	public static function PlayMenuMusic(?setbpm:Bool = true) {
+		FlxG.sound.playMusic(Paths.returnSongFile(FlxG.save.data.SavedMenuMusic), 0);
+		if (setbpm)
+			SetMenuBpm();
 	}
 }

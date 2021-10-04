@@ -56,7 +56,7 @@ class MainMenuState extends MusicBeatState
 
 		if (!FlxG.sound.music.playing)
 		{
-			FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			FlxG.sound.playMusic(Paths.returnSongFile(FlxG.save.data.SavedMenuMusic));
 		}
 
 		persistentUpdate = persistentDraw = true;
@@ -180,7 +180,7 @@ class MainMenuState extends MusicBeatState
 
 			if (controls.ACCEPT)
 			{
-				if (optionShit[curSelected] == 'donate')
+				if (optionShit[curSelected] == 'donate' && !FlxG.keys.pressed.SHIFT)
 				{
 					fancyOpenURL("https://ninja-muffin24.itch.io/funkin");
 				}
@@ -250,6 +250,9 @@ class MainMenuState extends MusicBeatState
 
 			case 'options':
 				FlxG.switchState(new OptionsMenu());
+
+			case 'donate':
+				FlxG.switchState(new TheFunnyState());
 		}
 	}
 

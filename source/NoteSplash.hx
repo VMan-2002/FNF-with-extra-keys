@@ -15,9 +15,6 @@ class NoteSplash extends FlxSprite
 	var colorsThatDontChange:Array<String> = ['purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'black', 'darkblue', 'orange', 'darkred'];
 	public function new(nX:Float, nY:Float, color:Int)
 	{
-
-
-
 		x = nX;
 		y = nY;
 		super(x, y);
@@ -37,7 +34,8 @@ class NoteSplash extends FlxSprite
         setPosition(nX - 105, nY - 110);
 		angle = FlxG.random.int(0, 360);
         alpha = 0.6;
-        animation.play(colors[color] + ' splash', true);
+        //animation.play(colors[color] + ' splash', true);
+        animation.play('blue splash', true); //
 		animation.curAnim.frameRate = 24 + FlxG.random.int(-2, 2);
 		//offset.set(500, 200);
         updateHitbox();

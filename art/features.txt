@@ -1,0 +1,36 @@
+= gameplay =
+
+-- Main menu music setting
+In the freeplay menu, press Home to set the currently selected song as the main menu music, or press End to reset the menu music back to normal.
+Hold Shift while pressing End to enable the new Kade Engine menu music.
+
+-- Song loading
+You can just dump songs in there now.
+Put the song audio and charts where they go and add it to freeplaySongList.txt, it'll just work.
+You don't even need to fix the characters (it'll just default to bf-pixel if the character is invalid)
+(Yes you can make new songs with this too)
+
+-- New Manias
+You now have 13k, 12k, 21k, and 19k.
+I know at least 13k works (in pixel noteskin at least), but the others might be screwed up.
+13k uses a combination of 9k and 4k controls (you'll need to rebind them so they're not the same), and the others probably aren't even controllable (and prob dont even work, especially 21k)
+Dont blame me it's just tedious to add new controls
+There's also 50k for those who want to die in real life (that was a joke (not the part about 50k existing))
+
+= charting =
+
+-- Note sustain limit
+It's been increased by 17 seconds. You're welcome, charters.
+
+-- Swap Section
+fixed :)
+
+-- Double Section
+Press this button to add this section's notes to the other player
+
+= internal =
+
+-- ManiaInfo class
+Just an internal thing, not useful for players to need to know.
+It just makes it easier for me to manage manias.
+It's not finished yet tho

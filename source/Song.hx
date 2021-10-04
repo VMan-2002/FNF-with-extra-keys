@@ -4,6 +4,10 @@ import Section.SwagSection;
 import haxe.Json;
 import haxe.format.JsonParser;
 import lime.utils.Assets;
+#if cpp
+import sys.FileSystem;
+import sys.io.File;
+#end
 
 using StringTools;
 
@@ -23,6 +27,15 @@ typedef SwagSong =
 	var noteStyle:String;
 	var stage:String;
 	var validScore:Bool;
+	
+	var player1extra:Array<String>; //intended for shaggy x matt kinda thing
+	var player2extra:Array<String>;
+	var player1extraalt:Array<Bool>; //which chars use alt animation
+	var player2extraalt:Array<Bool>;
+	
+	var IsEndless:Bool;
+	var LoopStart:Float;
+	var LoopEnd:Float;
 }
 
 class Song
@@ -46,6 +59,15 @@ class Song
 	public var gfVersion:String = '';
 	public var noteStyle:String = '';
 	public var stage:String = '';
+	
+	public var player1extra:Array<String> = new Array<String>();
+	public var player2extra:Array<String> = new Array<String>();
+	public var player1extraalt:Array<Bool> = new Array<Bool>();
+	public var player2extraalt:Array<Bool> = new Array<Bool>();
+	
+	public var IsEndless:Bool = false;
+	public var LoopStart:Float = 0.0;
+	public var LoopEnd:Float = 0.0;
 
 	public function new(song, notes, bpm)
 	{
@@ -53,11 +75,21 @@ class Song
 		this.notes = notes;
 		this.bpm = bpm;
 	}
+	
+
+	public static function loadFromJsonRAW(rawJson:String)
+	{
+		while (!rawJson.endsWith("}"))
+		{
+			rawJson = rawJson.substr(0, rawJson.length - 1);
+			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
+		}
+	
+		return parseJSONshit(rawJson);
+	}
 
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
 	{
-		trace(jsonInput);
-
 		// pre lowercasing the folder name
 		var folderLowercase = StringTools.replace(folder, " ", "-").toLowerCase();
 		switch (folderLowercase) {
@@ -67,31 +99,26 @@ class Song
 		
 		trace('loading ' + folderLowercase + '/' + jsonInput.toLowerCase());
 
-		var rawJson = Assets.getText(Paths.json(folderLowercase + '/' + jsonInput.toLowerCase())).trim();
+		return loadFromJsonRAW(LoadJSON(Paths.json(folderLowercase + '/' + jsonInput.toLowerCase())));
+	}
+	
 
-		while (!rawJson.endsWith("}"))
-		{
-			rawJson = rawJson.substr(0, rawJson.length - 1);
-			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
-		}
-
-		// FIX THE CASTING ON WINDOWS/NATIVE
-		// Windows???
-		// trace(songData);
-
-		// trace('LOADED FROM JSON: ' + songData.notes);
-		/* 
-			for (i in 0...songData.notes.length)
-			{
-				trace('LOADED FROM JSON: ' + songData.notes[i].sectionNotes);
-				// songData.notes[i].sectionNotes = songData.notes[i].sectionNotes
+	public static function LoadJSON(FilePath:String):String
+	{
+		#if cpp
+		if (!Assets.exists(FilePath)) {
+			if (FileSystem.exists(FilePath)) {
+				return File.getContent(FilePath).trim();
+			} else {
+				//don't do anything about it
+				//the game's gonna crash
+				//idk what to do about it
+				//not even return can save this (it just fails compile)
 			}
+		}
+		#end
 
-				daNotes = songData.notes;
-				daSong = songData.song;
-				daBpm = songData.bpm; */
-
-		return parseJSONshit(rawJson);
+		return Assets.getText(FilePath).trim();
 	}
 
 	public static function parseJSONshit(rawJson:String):SwagSong

@@ -147,6 +147,9 @@ class KadeEngineData
 
 		if (FlxG.save.data.randomNoteTypes == null)
 			FlxG.save.data.randomNoteTypes = 0;
+
+		if (FlxG.save.data.SavedMenuMusic == null || FlxG.save.data.SavedMenuMusic == "music/freakyMenu")
+			FlxG.save.data.SavedMenuMusic = "assets/music/freakyMenu";
 		
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 		

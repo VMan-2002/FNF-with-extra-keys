@@ -1,0 +1,7 @@
+these arent real yet lol
+
+vman_getcamerapos()
+
+vman_setcamerafocus()
+
+idk what im doing here

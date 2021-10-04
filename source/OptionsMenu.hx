@@ -35,6 +35,7 @@ class OptionsMenu extends MusicBeatState
 			new DFJKOption(controls),
 			new SixKeyMenu(controls),
 			new NineKeyMenu(controls),
+			new ManyKeyMenu(controls),
 			new DownscrollOption("Change the layout of the strumline."),
 			new Judgement("Customize your Hit Timings (LEFT or RIGHT)"),
 			#if desktop
@@ -71,6 +72,7 @@ class OptionsMenu extends MusicBeatState
 			new Optimization("No backgrounds, no characters, centered notes, no player 2."),
 			new GraphicLoading("On startup, cache every character. Significantly decrease load times. (HIGH MEMORY)"),
 			new BotPlay("Showcase your charts and mods with autoplay."),
+			new HideDiscordOption("Hide your activity in Discord. (Not used right now, as i cant compile with DiscordRpc D:)"),
 		]),
 		new OptionCategory("Experimental", [
 			new GTHModeOption("Change the input system to act similar to Guitar Hero(actual controller recommended)")

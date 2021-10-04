@@ -866,6 +866,28 @@ class NineKeyMenu extends Option
 	}
 }
 
+class ManyKeyMenu extends Option
+{
+	private var controls:Controls;
+
+	public function new(controls:Controls)
+	{
+		super();
+		this.controls = controls;
+	}
+
+	public override function press():Bool
+	{
+		//OptionsMenu.instance.openSubState(new ManyKeyBindMenu());
+		return false;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "Key Bindings for Many Key";
+	}
+}
+
 class ResetScoreOption extends Option
 {
 	var confirm:Bool = false;
@@ -988,6 +1010,34 @@ class NoteSplashOption extends Option
 	private override function updateDisplay():String
 	{
 		return "Note Splash: " + (!FlxG.save.data.noteSplash ? "off" : "on");
+	}
+}
+
+class HideDiscordOption extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+	public override function press():Bool
+	{
+		FlxG.save.data.hideDiscord += 1;
+		if (FlxG.save.data.hideDiscord > 2) {
+			FlxG.save.data.hideDiscord = 0;
+		}
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		if (FlxG.save.data.hideDiscord == 1) {
+			return "Hide Song Names in Discord";
+		} else if (FlxG.save.data.hideDiscord == 2) {
+			return "Hide Discord";
+		}
+		return "Show Discord";
 	}
 }
 

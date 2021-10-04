@@ -64,7 +64,7 @@ class FreeplayState extends MusicBeatState
 			if (FlxG.sound.music != null)
 			{
 				if (!FlxG.sound.music.playing)
-					FlxG.sound.playMusic(Paths.music('freakyMenu'));
+					FlxG.sound.playMusic(Paths.returnSongFile(FlxG.save.data.SavedMenuMusic));
 			}
 		 */
 
@@ -317,54 +317,50 @@ class FreeplayState extends MusicBeatState
 		{
 			FlxG.switchState(new MainMenuState());
 		}
+		
+		if (FlxG.keys.justPressed.HOME) {
+			trace('Set Menu Music');
+			var NewMenuTheme:String = Paths.SolveSong(songs[curSelected].songName);
+			trace('Name of the music: '+NewMenuTheme);
+			FlxG.save.data.SavedMenuMusic = "assets/songs/"+NewMenuTheme+"/Inst";
+		}
+		
+		if (FlxG.keys.justPressed.END) {
+			if (FlxG.keys.pressed.SHIFT) {
+				trace('Reset Kade Menu Music');
+				FlxG.save.data.SavedMenuMusic = "assets/music/kadeMenu";
+			} else {
+				trace('Reset Menu Music');
+				FlxG.save.data.SavedMenuMusic = "assets/music/freakyMenu";
+			}
+		}
 
 		if (accepted)
 		{
-			if (!FlxG.keys.pressed.SHIFT)
-			{
-				// adjusting the song name to be compatible
-				var songFormat = StringTools.replace(songs[curSelected].songName, " ", "-");
-				switch (songFormat) {
-					case 'Dad-Battle': songFormat = 'Dadbattle';
-					case 'Philly-Nice': songFormat = 'Philly';
-				}
-				
-				trace(songs[curSelected].songName);
-
-				var poop:String = Highscore.formatSong(songFormat, curDifficulty);
-
-				trace(poop);
-				
-				PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName);
-				PlayState.isStoryMode = false;
-				PlayState.storyDifficulty = curDifficulty;
-				PlayState.storyWeek = songs[curSelected].week;
-				trace('CUR WEEK' + PlayState.storyWeek);
-				LoadingState.loadAndSwitchState(new PlayState());
+			// adjusting the song name to be compatible
+			var songFormat = StringTools.replace(songs[curSelected].songName, " ", "-");
+			switch (songFormat) {
+				case 'Dad-Battle': songFormat = 'Dadbattle';
+				case 'Philly-Nice': songFormat = 'Philly';
 			}
-			else
-			{
-				// adjusting the song name to be compatible
-				var songFormat = StringTools.replace(songs[curSelected].songName, " ", "-");
-				switch (songFormat) {
-					case 'Dad-Battle': songFormat = 'Dadbattle';
-					case 'Philly-Nice': songFormat = 'Philly';
-				}
-				
-				trace(songs[curSelected].songName);
+			
+			trace(songs[curSelected].songName);
 
-				var poop:String = Highscore.formatSong(songFormat, curDifficulty);
+			var poop:String = Highscore.formatSong(songFormat, curDifficulty);
 
-				trace(poop);
-				
-				PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName);
-				PlayState.isStoryMode = false;
-				PlayState.storyDifficulty = curDifficulty;
-				PlayState.storyWeek = songs[curSelected].week;
+			trace(poop);
+			
+			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName);
+			PlayState.isStoryMode = false;
+			PlayState.storyDifficulty = curDifficulty;
+			PlayState.storyWeek = songs[curSelected].week;
+			trace('CUR WEEK' + PlayState.storyWeek);
+			if (FlxG.keys.pressed.SHIFT) {
 				LoadingState.loadAndSwitchState(new ChartingState());
 				Main.editor = true;
+			} else {
+				LoadingState.loadAndSwitchState(new PlayState());
 			}
-
 		}
 	}
 

@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin': Kade Engine" file="Kade Engine" packageName="com.kadedev.kadeengine" package="com.kadedev.kadeengine" main="Main" version="0.2.7.1" company="kadedev" />
+	<app title="Friday Night Funkin': Kade Engine" file="keysmod" packageName="com.vman_2002.moddedkeys" package="com.vman_2002.moddedkeys" main="Main" version="0.2.7.1" company="VMan_2002" />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -92,6 +92,7 @@
 	
 	<assets path='example_mods' rename='mods' embed='false'/>
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
+	<assets path='art/features.txt' rename='features.txt' />
 	<assets path='LICENSE' rename='LICENSE.txt' />
 	<!-- <template path='mods' /> -->
 	
@@ -114,6 +115,8 @@
 
 	<haxelib name="actuate" />
 	<haxelib name="extension-webm"/> <!-- Make sure to use https://github.com/KadeDev/extension-webm/ -->
+	<haxelib name="hxcpp-debugger"/> <!-- how to use it: https://github.com/HaxeFoundation/hxcpp-debugger/wiki/Getting-started -->
+	<!-- remember to remove breakpoints in versions for release :) -->
 
 	<!--In case you want to use the ui package-->
 	<haxelib name="flixel-ui" />

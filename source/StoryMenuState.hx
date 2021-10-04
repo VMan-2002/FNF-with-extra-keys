@@ -31,11 +31,18 @@ class StoryMenuState extends MusicBeatState
 		['Pico', 'Philly Nice', "Blammed"],
 		['Satin Panties', "High", "Milf"],
 		['Cocoa', 'Eggnog', 'Winter Horrorland'],
-		['Senpai', 'Roses', 'Thorns']
+		['Senpai', 'Roses', 'Thorns'],
+		['Jarken'],
+		['Crick', 'Kckirren'],
+		['Awful', 'Atrocious'],
+		['Hytake', 'Hydar', 'Hyzdaz']
 	];
 	var curDifficulty:Int = 1;
 
-	public static var weekUnlocked:Array<Bool> = [true, true, true, true, true, true, true];
+	//var Ch1Done:Bool = false;
+	//var Ch2Done:Bool = false;
+	
+	public static var weekUnlocked:Array<Bool> = [true, true, true, true, true, true, true, true, true, true, true];
 
 	var weekCharacters:Array<Dynamic> = [
 		['', 'bf', 'gf'],
@@ -44,7 +51,11 @@ class StoryMenuState extends MusicBeatState
 		['pico', 'bf', 'gf'],
 		['mom', 'bf', 'gf'],
 		['parents-christmas', 'bf', 'gf'],
-		['senpai', 'bf', 'gf']
+		['senpai', 'bf', 'gf'],
+		['', 'bf', ''],
+		['', 'bf', 'gf'],
+		['', 'bf', 'gf'],
+		['', 'bf', 'gf']
 	];
 
 	var weekNames:Array<String> = [
@@ -54,7 +65,11 @@ class StoryMenuState extends MusicBeatState
 		"PICO",
 		"MOMMY MUST MURDER",
 		"RED SNOW",
-		"Hating Simulator ft. Moawling"
+		"Hating Simulator ft. Moawling",
+		"Jarken",
+		"Crick",
+		"Awful",
+		"Hydar"
 	];
 
 	var txtWeekTitle:FlxText;
@@ -86,7 +101,7 @@ class StoryMenuState extends MusicBeatState
 		if (FlxG.sound.music != null)
 		{
 			if (!FlxG.sound.music.playing)
-				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				FlxG.sound.playMusic(Paths.returnSongFile(FlxG.save.data.SavedMenuMusic));
 		}
 
 		persistentUpdate = persistentDraw = true;

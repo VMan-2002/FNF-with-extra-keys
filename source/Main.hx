@@ -25,6 +25,8 @@ class Main extends Sprite
 	public static var editor:Bool = false;
 
 	public static var watermarks = true; // Whether to put Kade Engine liteartly anywhere
+	
+	public static var debug:debugger.Local;
 
 	// You can pretty much ignore everything from here on - your code should go in your states.
 
@@ -32,7 +34,7 @@ class Main extends Sprite
 	{
 
 		// quick checks 
-
+		debug = new debugger.Local(true);
 		Lib.current.addChild(new Main());
 	}
 

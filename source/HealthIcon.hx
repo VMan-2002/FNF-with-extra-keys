@@ -1,6 +1,10 @@
 package;
 
 import flixel.FlxSprite;
+#if cpp
+import lime.graphics.Image;
+import sys.FileSystem;
+#end
 
 class HealthIcon extends FlxSprite
 {
@@ -32,11 +36,18 @@ class HealthIcon extends FlxSprite
 		animation.add('spirit', [23, 23], 0, false, isPlayer);
 		animation.add('bf-old', [14, 15], 0, false, isPlayer);
 		animation.add('gf', [16], 0, false, isPlayer);
+		animation.add('gf-player', [16, 26], 0, false, isPlayer);
 		animation.add('gf-christmas', [16], 0, false, isPlayer);
-		animation.add('gf-pixel', [16], 0, false, isPlayer);
+		animation.add('gf-pixel', [29], 0, false, isPlayer);
 		animation.add('parents-christmas', [17, 18], 0, false, isPlayer);
 		animation.add('monster', [19, 20], 0, false, isPlayer);
 		animation.add('monster-christmas', [19, 20], 0, false, isPlayer);
+		
+		#if cpp
+		//if (Character.CharacterExistCheck(char) == char)
+			//AddCustomIcon(char, self);
+		#end
+		
 		animation.play(char);
 
 		switch(char)
@@ -47,6 +58,17 @@ class HealthIcon extends FlxSprite
 
 		scrollFactor.set();
 	}
+	
+	#if cpp
+	public static function AddCustomIcon(char:String, self:HealthIcon):Void {
+		/*var file:String = 'assets/images/icons/'+char+".png";
+		if(FileSystem.exists(file)) {
+			self.loadGraphic(Image.fromFile(file), true, 150, 150);
+			self.animation.add(char, [0, 1], 0, false, isPlayer);
+		}*/
+		//what am i doing
+	}
+	#end
 
 	override function update(elapsed:Float)
 	{

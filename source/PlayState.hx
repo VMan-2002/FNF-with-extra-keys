@@ -72,6 +72,9 @@ import Sys;
 import sys.FileSystem;
 #end
 
+import ManiaInfo;
+import Character;
+
 using StringTools;
 
 class PlayState extends MusicBeatState
@@ -92,7 +95,9 @@ class PlayState extends MusicBeatState
 	public static var sicks:Int = 0;
 	public static var mania:Int = 0;
 	public static var maniaToChange:Int = 0;
-	public static var keyAmmo:Array<Int> = [4, 6, 9, 5, 7, 8, 1, 2, 3];
+	public static var keyAmmo:Array<Int> = [4, 6, 9, 5, 7, 8, 1, 2, 3,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, //filler
+		13]; //new shit
 	private var ctrTime:Float = 0;
 
 	public static var songPosBG:FlxSprite;
@@ -269,6 +274,8 @@ class PlayState extends MusicBeatState
 	public function removeObject(object:FlxBasic) { remove(object); }
 
 
+	public static var ThisManiaInfo:SwagMania;
+
 	override public function create()
 	{
 		FlxG.mouse.visible = false;
@@ -397,11 +404,16 @@ class PlayState extends MusicBeatState
 			mania = FlxG.save.data.mania;
 
 		maniaToChange = mania;
+		
+		ThisManiaInfo = ManiaInfo.GetManiaInfo(mania);
 
 		Note.scaleSwitch = true;
 
 		if (SONG == null)
 			SONG = Song.loadFromJson('tutorial', 'tutorial');
+		
+		SONG.player1 = Character.CharacterExistCheck(SONG.player1);
+		SONG.player2 = Character.CharacterExistCheck(SONG.player2);
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
@@ -411,7 +423,7 @@ class PlayState extends MusicBeatState
 		//dialogue shit
 		switch (songLowercase)
 		{
-			case 'tutorial':
+			/*case 'tutorial':
 				dialogue = ["Hey you're pretty cute.", 'Use the arrow keys to keep up \nwith me singing.'];
 			case 'bopeebo':
 				dialogue = [
@@ -427,7 +439,7 @@ class PlayState extends MusicBeatState
 					"gah you think you're hot stuff?",
 					"If you can beat me here...",
 					"Only then I will even CONSIDER letting you\ndate my daughter!"
-				];
+				];*/
 			case 'senpai':
 				dialogue = CoolUtil.coolTextFile(Paths.txt('senpai/senpaiDialogue'));
 			case 'roses':
@@ -865,6 +877,8 @@ class PlayState extends MusicBeatState
 				curGf = 'gf';
 		}
 		
+		curGf = Character.CharacterExistCheck(curGf);
+		
 		gf = new Character(400, 130, curGf);
 		gf.scrollFactor.set(0.95, 0.95);
 
@@ -1257,6 +1271,8 @@ class PlayState extends MusicBeatState
 		startingSong = true;
 		
 		trace('starting');
+		
+		//Main.debug.debug();
 
 		if (isStoryMode)
 		{
@@ -1317,6 +1333,7 @@ class PlayState extends MusicBeatState
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, releaseInput);
 
 		super.create();
+		trace('done all the song init stuff');
 	}
 
 	function schoolIntro(?dialogueBox:DialogueBox):Void
@@ -1422,7 +1439,7 @@ class PlayState extends MusicBeatState
 		generateStaticArrows(0);
 		generateStaticArrows(1);
 
-		switch(mania) //moved it here because i can lol
+		/*switch(mania) //moved it here because i can lol
 		{
 			case 0: 
 				keys = [false, false, false, false];
@@ -1442,7 +1459,10 @@ class PlayState extends MusicBeatState
 				keys = [false, false];
 			case 8: 
 				keys = [false, false, false];
-		}
+			case 20: 
+				keys = [false, false, false, false, false, false, false, false, false, false, false, false, false];
+		}*/
+		keys = ManiaInfo.ArrayRepeat(ThisManiaInfo.keys, false);
 	
 		
 
@@ -1686,7 +1706,7 @@ class PlayState extends MusicBeatState
 						data = 0;
 					case 39:
 						data = 2;
-				}
+			}
 			case 10: 
 				binds = [FlxG.save.data.leftBind,FlxG.save.data.downBind, FlxG.save.data.upBind, FlxG.save.data.rightBind, null, null, null, null, null];
 				switch(evt.keyCode) // arrow keys
@@ -1804,6 +1824,46 @@ class PlayState extends MusicBeatState
 					case 39:
 						data = 3;
 				}
+			case 20: 
+				binds = [
+					FlxG.save.data.N0Bind,
+					FlxG.save.data.N1Bind,
+					FlxG.save.data.N2Bind,
+					FlxG.save.data.N3Bind,
+					FlxG.save.data.leftBind,
+					FlxG.save.data.downBind,
+					FlxG.save.data.N4Bind,
+					FlxG.save.data.upBind,
+					FlxG.save.data.rightBind,
+					FlxG.save.data.N5Bind,
+					FlxG.save.data.N6Bind,
+					FlxG.save.data.N7Bind,
+					FlxG.save.data.N8Bind
+				];
+				switch(evt.keyCode) // arrow keys
+				{
+					case 37:
+						data = 4;
+					case 40:
+						data = 5;
+					case 38:
+						data = 7;
+					case 39:
+						data = 8;
+			}
+			//does this works
+			/*default:
+				var mi:SwagMania = ManiaInfo.GetManiaInfo(maniaToChange);
+				binds = [
+					for (v in ManiaInfo.GetManiaInfo(maniaToChange).controls) {
+						v = FlxG.save.data[v+"Bind"];
+					}
+				];
+				if (evt.keyCode in mi.arrowkeys) {
+					data = mi.arrowkeys[evt.keyCode];
+			}*/
+			//no
+			
 		}
 
 		
@@ -2050,7 +2110,44 @@ class PlayState extends MusicBeatState
 					case 39:
 						data = 3;
 				}
-
+			case 20: 
+				binds = [
+					FlxG.save.data.N0Bind,
+					FlxG.save.data.N1Bind,
+					FlxG.save.data.N2Bind,
+					FlxG.save.data.N3Bind,
+					FlxG.save.data.leftBind,
+					FlxG.save.data.downBind,
+					FlxG.save.data.N4Bind,
+					FlxG.save.data.upBind,
+					FlxG.save.data.rightBind,
+					FlxG.save.data.N5Bind,
+					FlxG.save.data.N6Bind,
+					FlxG.save.data.N7Bind,
+					FlxG.save.data.N8Bind
+				];
+				switch(evt.keyCode) // arrow keys
+				{
+					case 37:
+						data = 4;
+					case 40:
+						data = 5;
+					case 38:
+						data = 7;
+					case 39:
+						data = 8;
+				}
+				/*default:
+				var mi:SwagMania = ManiaInfo.GetManiaInfo(maniaToChange);
+				binds = [
+					for (v in ManiaInfo.GetManiaInfo(maniaToChange).controls) {
+						v = FlxG.save.data[v+"Bind"];
+					}
+				];
+				if (evt.keyCode in mi.arrowkeys) {
+					data = mi.arrowkeys[evt.keyCode];
+				}*/
+			//see above lol
 		}
 
 			for (i in 0...binds.length) // binds
@@ -2174,7 +2271,18 @@ class PlayState extends MusicBeatState
 						NoteSplash.colors = ['purple', 'red'];
 					case 8: 
 						NoteSplash.colors = ['purple', 'white', 'red'];
+					case 20: 
+						NoteSplash.colors = ['yellow', 'violet', 'darkred', 'darkblue', 'purple', 'blue', 'white', 'green', 'red', 'yellow', 'violet', 'darkred', 'darkblue'];
+					default:
+						NoteSplash.colors = ThisManiaInfo.arrows;
 				}
+				NoteSplash.colors = [
+					for (v in NoteSplash.colors) {
+						if (v == "dark") {
+							v = "darkblue";
+						}
+					}
+				];
 			}
 
 		FlxG.sound.music.onComplete = endSong;
@@ -2295,12 +2403,12 @@ class PlayState extends MusicBeatState
 			//FlxG.save.data.randomNotes = "None";
 		for (section in noteData)
 		{
-			var mn:Int = keyAmmo[mania];
+			var mn:Int = ThisManiaInfo.keys;
 			var coolSection:Int = Std.int(section.lengthInSteps / 4);
 			var dataForThisSection:Array<Int> = [];
 			var randomDataForThisSection:Array<Int> = [];
 			//var maxNoteData:Int = 3;
-			switch (maniaToChange) //sets up the max data for each section based on mania
+			/*switch (maniaToChange) //sets up the max data for each section based on mania
 			{
 				case 0: 
 					dataForThisSection = [0,1,2,3];
@@ -2320,7 +2428,11 @@ class PlayState extends MusicBeatState
 					dataForThisSection = [0,1];
 				case 8: 
 					dataForThisSection = [0,1,2];
-			}
+				case 20: 
+					dataForThisSection = [0,1,2,3,4,5,6,7,8,9,10,11,12,13];
+			}*/
+			dataForThisSection = CoolUtil.numberArray(ManiaInfo.GetManiaInfo(maniaToChange).keys); //wow i really did replace an entire switch structure thing with 1 line holy shit
+			
 			if (PlayStateChangeables.randomNotes && PlayStateChangeables.randomSection)
 			{
 				for (i in 0...dataForThisSection.length) //point of this is to randomize per section, so each lane of notes will move together, its kinda hard to explain, but it give good charts so idc
@@ -2354,8 +2466,8 @@ class PlayState extends MusicBeatState
 				{
 					switch(PlayStateChangeables.randomNoteTypes) //changes based on chance based on setting
 					{
-						case 0: 
-							isRandomNoteType = false;
+						//case 0: //not actually needed since it's already false
+						//	isRandomNoteType = false;
 						case 1: 
 							isRandomNoteType = FlxG.random.bool(1);
 						case 2: 
@@ -2569,7 +2681,7 @@ class PlayState extends MusicBeatState
 
 	private function generateStaticArrows(player:Int):Void
 	{
-		for (i in 0...keyAmmo[mania])
+		for (i in 0...ThisManiaInfo.keys)
 		{
 			// FlxG.log.add(i);
 			var babyArrow:FlxSprite = new FlxSprite(0, strumLine.y);
@@ -2613,7 +2725,7 @@ class PlayState extends MusicBeatState
 					var endconf:Array<Int> = [36, 37, 38, 39, 40, 41, 42, 43, 44];
 						switch (mania)
 						{
-							case 1:
+							/*case 1:
 								numstatic = [0, 2, 3, 5, 1, 8];
 								startpress = [9, 11, 12, 14, 10, 17];
 								endpress = [18, 20, 21, 23, 19, 26];
@@ -2657,8 +2769,36 @@ class PlayState extends MusicBeatState
 								startpress = [9, 13, 12];
 								endpress = [18, 22, 21];
 								startconf = [27, 31, 30];
-								endconf = [36, 40, 39];
-
+								endconf = [36, 40, 39];*/
+								//fuck pixel notes im not doing it
+								//ok maybe i will
+							default:
+								var arrnames:Array<String> = ThisManiaInfo.arrows;
+								var numberwide:Int = ManiaInfo.PixelNoteSheetWide;
+								numstatic = arrnames.map(a -> {
+									return ManiaInfo.PixelArrowNum[a];
+								});
+								startpress = [
+									for (v in numstatic) {
+										v += numberwide;
+									}
+								];
+								endpress = [
+									for (v in numstatic) {
+										v += numberwide * 2;
+									}
+								];
+								startconf = [
+									for (v in numstatic) {
+										v += numberwide * 3;
+									}
+								];
+								endconf = [
+									for (v in numstatic) {
+										v += numberwide * 4;
+									}
+								];
+							//holy shit did i just do it
 
 						}
 					babyArrow.x += Note.swagWidth * i;
@@ -2683,7 +2823,7 @@ class PlayState extends MusicBeatState
 							var pPre:Array<String> = ['purple', 'blue', 'green', 'red'];
 								switch (mania)
 								{
-									case 1:
+									/*case 1:
 										nSuf = ['LEFT', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'RIGHT'];
 										pPre = ['purple', 'green', 'red', 'yellow', 'blue', 'dark'];
 	
@@ -2714,6 +2854,17 @@ class PlayState extends MusicBeatState
 									case 8: 
 										nSuf = ['LEFT', 'SPACE', 'RIGHT'];
 										pPre = ['purple', 'white', 'red'];
+	
+									case 20:
+										nSuf = ['LEFT', 'DOWN', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'SPACE', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'UP', 'RIGHT'];
+										pPre = ['yellow', 'violet', 'darkred', 'dark', 'purple', 'blue', 'white', 'green', 'red', 'yellow', 'violet', 'darkred', 'dark'];*/
+									default:
+										nSuf = [
+											for (v in ThisManiaInfo.arrows) {
+												v = ManiaInfo.StrumlineArrow[v];
+											}
+										];
+										pPre = ThisManiaInfo.arrows;
 	
 								}
 						
@@ -2947,7 +3098,7 @@ class PlayState extends MusicBeatState
 			var p1 = luaModchart.getVar("strumLine1Visible",'bool');
 			var p2 = luaModchart.getVar("strumLine2Visible",'bool');
 
-			for (i in 0...keyAmmo[mania])
+			for (i in 0...ThisManiaInfo.keys)
 			{
 				strumLineNotes.members[i].visible = p1;
 				if (i <= playerStrums.length)
@@ -3028,12 +3179,12 @@ class PlayState extends MusicBeatState
 			paused = true;
 
 			// 1 / 1000 chance for Gitaroo Man easter egg
-			if (FlxG.random.bool(0.1))
+			/*if (FlxG.random.bool(0.1))
 			{
 				trace('GITAROO MAN EASTER EGG');
 				FlxG.switchState(new GitarooPause());
 			}
-			else
+			else*/ //haha it's only inconvenient lol
 				openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 		}
 
@@ -3567,7 +3718,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		switch(mania)
+		/*switch(mania)
 		{
 			case 0: 
 				sDir = ['LEFT', 'DOWN', 'UP', 'RIGHT'];
@@ -3596,7 +3747,20 @@ class PlayState extends MusicBeatState
 			case 8:
 				sDir = ['LEFT', 'UP', 'RIGHT'];
 				bfsDir = ['LEFT', 'Hey', 'RIGHT'];
-		}
+			case 20: 
+				sDir = ['LEFT', 'DOWN', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'UP', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'UP', 'RIGHT'];
+				bfsDir = ['LEFT', 'DOWN', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'Hey', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'UP', 'RIGHT'];
+		}*/
+		bfsDir = [
+			for (v in ThisManiaInfo.arrows) {
+				v = ManiaInfo.BfDir[v];
+			}
+		];
+		sDir = [
+			for (v in ThisManiaInfo.arrows) {
+				v = ManiaInfo.Dir[v];
+			}
+		];
 
 		if (generatedMusic)
 			{
@@ -3619,7 +3783,7 @@ class PlayState extends MusicBeatState
 					case 7: 
 						hold = [controls.LEFT, controls.RIGHT];
 					case 8: 
-						hold = [controls.LEFT, controls.N4, controls.RIGHT];
+					hold = [controls.LEFT, controls.N4, controls.RIGHT];
 
 					case 10: //changing mid song (mania + 10, seemed like the best way to make it change without creating more switch statements)
 						hold = [controls.LEFT, controls.DOWN, controls.UP, controls.RIGHT,false,false,false,false,false];
@@ -3639,6 +3803,12 @@ class PlayState extends MusicBeatState
 						hold = [controls.LEFT, false, false, controls.RIGHT, false, false, false, false, false];
 					case 18: 
 						hold = [controls.LEFT, false, false, controls.RIGHT, controls.N4, false, false, false, false];
+					//13key
+					case 20: 
+					hold = [controls.N0, controls.N1, controls.N2, controls.N3, controls.LEFT, controls.DOWN, controls.N4, controls.UP, controls.RIGHT, controls.N5, controls.N6, controls.N7, controls.N8];
+					default:
+					hold = [controls.N0, controls.N1, controls.N2, controls.N3, controls.LEFT, controls.DOWN, controls.N4, controls.UP, controls.RIGHT, controls.N5, controls.N6, controls.N7, controls.N8];
+						//hold = ManiaInfo.GetManiaInfo(maniaToChange).controls;
 				}
 				var holdArray:Array<Bool> = hold;
 
@@ -3790,7 +3960,7 @@ class PlayState extends MusicBeatState
 									spr.centerOffsets();
 									switch(maniaToChange)
 									{
-										case 0: 
+										case 0 | 6 | 7 | 8 | 16 | 17 | 18 | 10: 
 											spr.offset.x -= 13;
 											spr.offset.y -= 13;
 										case 1: 
@@ -3808,18 +3978,6 @@ class PlayState extends MusicBeatState
 										case 5: 
 											spr.offset.x -= 20;
 											spr.offset.y -= 20;
-										case 6: 
-											spr.offset.x -= 13;
-											spr.offset.y -= 13;
-										case 7: 
-											spr.offset.x -= 13;
-											spr.offset.y -= 13;
-										case 8:
-											spr.offset.x -= 13;
-											spr.offset.y -= 13;
-										case 10: 
-											spr.offset.x -= 13;
-											spr.offset.y -= 13;
 										case 11: 
 											spr.offset.x -= 16;
 											spr.offset.y -= 16;
@@ -3835,15 +3993,6 @@ class PlayState extends MusicBeatState
 										case 15: 
 											spr.offset.x -= 20;
 											spr.offset.y -= 20;
-										case 16: 
-											spr.offset.x -= 13;
-											spr.offset.y -= 13;
-										case 17: 
-											spr.offset.x -= 13;
-											spr.offset.y -= 13;
-										case 18:
-											spr.offset.x -= 13;
-											spr.offset.y -= 13;
 									}
 								}
 								else
@@ -4114,7 +4263,7 @@ class PlayState extends MusicBeatState
 															spr.centerOffsets();
 															switch(maniaToChange)
 															{
-																case 0: 
+																case 0 | 6 | 7 | 8 | 16 | 17 | 18 | 10: 
 																	spr.offset.x -= 13;
 																	spr.offset.y -= 13;
 																case 1: 
@@ -4132,18 +4281,6 @@ class PlayState extends MusicBeatState
 																case 5: 
 																	spr.offset.x -= 20;
 																	spr.offset.y -= 20;
-																case 6: 
-																	spr.offset.x -= 13;
-																	spr.offset.y -= 13;
-																case 7: 
-																	spr.offset.x -= 13;
-																	spr.offset.y -= 13;
-																case 8:
-																	spr.offset.x -= 13;
-																	spr.offset.y -= 13;
-																case 10: 
-																	spr.offset.x -= 13;
-																	spr.offset.y -= 13;
 																case 11: 
 																	spr.offset.x -= 16;
 																	spr.offset.y -= 16;
@@ -4159,15 +4296,6 @@ class PlayState extends MusicBeatState
 																case 15: 
 																	spr.offset.x -= 20;
 																	spr.offset.y -= 20;
-																case 16: 
-																	spr.offset.x -= 13;
-																	spr.offset.y -= 13;
-																case 17: 
-																	spr.offset.x -= 13;
-																	spr.offset.y -= 13;
-																case 18:
-																	spr.offset.x -= 13;
-																	spr.offset.y -= 13;
 															}
 														}
 														else
@@ -4275,7 +4403,7 @@ class PlayState extends MusicBeatState
 
 		if (offsetTesting)
 		{
-			FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			FlxG.sound.playMusic(Paths.returnSongFile(FlxG.save.data.SavedMenuMusic));
 			offsetTesting = false;
 			LoadingState.loadAndSwitchState(new OptionsMenu());
 			FlxG.save.data.offset = offsetTest;
@@ -4301,7 +4429,7 @@ class PlayState extends MusicBeatState
 						openSubState(new ResultsScreen());
 					else
 					{
-						FlxG.sound.playMusic(Paths.music('freakyMenu'));
+						FlxG.sound.playMusic(Paths.returnSongFile(FlxG.save.data.SavedMenuMusic));
 						FlxG.switchState(new MainMenuState());
 					}
 
@@ -4901,6 +5029,38 @@ class PlayState extends MusicBeatState
 					case 18: 
 						press = [controls.LEFT_P, false, false, controls.RIGHT_P, controls.N4_P, false, false, false, false];
 						release = [controls.LEFT_R, false, false, controls.RIGHT_R, controls.N4_R, false, false, false, false];
+					case 20: 
+						//hold = [controls.N0, controls.N1, controls.N2, controls.N3, controls.N4, controls.N5, controls.N6, controls.N7, controls.N8];
+						press = [
+							controls.N0_P,
+							controls.N1_P,
+							controls.N2_P,
+							controls.N3_P,
+							controls.LEFT_P,
+							controls.DOWN_P,
+							controls.N4_P,
+							controls.UP_P,
+							controls.RIGHT_P,
+							controls.N5_P,
+							controls.N6_P,
+							controls.N7_P,
+							controls.N8_P
+						];
+						release = [
+							controls.N0_R,
+							controls.N1_R,
+							controls.N2_R,
+							controls.N3_R,
+							controls.LEFT_R,
+							controls.DOWN_R,
+							controls.N4_R,
+							controls.UP_R,
+							controls.RIGHT_R,
+							controls.N5_R,
+							controls.N6_R,
+							controls.N7_R,
+							controls.N8_R
+						];
 				}
 				var holdArray:Array<Bool> = hold;
 				var pressArray:Array<Bool> = press;
@@ -4934,8 +5094,8 @@ class PlayState extends MusicBeatState
 					releaseArray = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
 				} 
 
-				var anas:Array<Ana> = [null,null,null,null];
-				switch(mania)
+				//var anas:Array<Ana> = [null,null,null,null];
+				/*switch(mania)
 				{
 					case 0: 
 						anas = [null,null,null,null];
@@ -4955,7 +5115,10 @@ class PlayState extends MusicBeatState
 						anas = [null,null];
 					case 8: 
 						anas = [null,null,null];
-				}
+					case 20: 
+						anas = [null,null,null,null,null,null,null,null,null,null,null,null,null];
+				}*/
+				var anas:Array<Ana> = ManiaInfo.ArrayRepeat(ThisManiaInfo.keys, null);
 
 				for (i in 0...pressArray.length)
 					if (pressArray[i])
@@ -5052,7 +5215,7 @@ class PlayState extends MusicBeatState
 						var dumbNotes:Array<Note> = []; // notes to kill later
 						var directionsAccounted:Array<Bool> = [false,false,false,false]; // we don't want to do judgments for more than one presses
 						
-						switch(mania)
+						/*switch(mania)
 						{
 							case 0: 
 								directionsAccounted = [false, false, false, false];
@@ -5072,7 +5235,10 @@ class PlayState extends MusicBeatState
 								directionsAccounted = [false, false];
 							case 8: 
 								directionsAccounted = [false, false, false];
-						}
+							case 20: 
+								directionsAccounted = [false, false, false, false, false, false, false, false, false, false, false, false, false];
+						}*/
+						directionsAccounted = ManiaInfo.ArrayRepeat(ThisManiaInfo.keys, false);
 						
 
 						notes.forEachAlive(function(daNote:Note)
@@ -5117,7 +5283,7 @@ class PlayState extends MusicBeatState
 			
 						possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
 						var hit = [false,false,false,false,false,false,false,false,false];
-						switch(mania)
+						/*switch(mania)
 						{
 							case 0: 
 								hit = [false, false, false, false];
@@ -5137,7 +5303,10 @@ class PlayState extends MusicBeatState
 								hit = [false, false];
 							case 8: 
 								hit = [false, false, false];
-						}
+							case 20: 
+								hit = [false, false, false, false, false, false, false, false, false, false, false, false, false];
+						}*/
+						hit = ManiaInfo.ArrayRepeat(ThisManiaInfo.keys, false);
 						if (perfectMode)
 							goodNoteHit(possibleNotes[0]);
 						else if (possibleNotes.length > 0)
@@ -5181,7 +5350,7 @@ class PlayState extends MusicBeatState
 							}
 						else if (!FlxG.save.data.ghost)
 							{
-								for (shit in 0...keyAmmo[mania])
+								for (shit in 0...ThisManiaInfo.keys)
 									if (pressArray[shit])
 										noteMiss(shit, null);
 							}
@@ -5773,10 +5942,11 @@ class PlayState extends MusicBeatState
 				case 18: 
 					Note.newNoteScale = 0.7;
 			}
+			//Note.newNoteScale = ManiaInfo.GetNoteScale(ManiaInfo.GetManiaInfo(newMania % 10).keys);
 	
 			strumLineNotes.forEach(function(spr:FlxSprite)
 				{
-					FlxTween.tween(spr, {alpha: 0}, 0.5, {
+					FlxTween.tween(spr, {alpha: 0}, 0.5 / 3, {
 						onComplete: function(tween:FlxTween)
 						{
 							spr.animation.play('static'); //changes to static because it can break the scaling of the static arrows if they are doing the confirm animation
@@ -5787,7 +5957,7 @@ class PlayState extends MusicBeatState
 					});
 				});
 	
-			new FlxTimer().start(0.6, function(tmr:FlxTimer)
+			new FlxTimer().start(0.6 / 3, function(tmr:FlxTimer)
 				{
 					cpuStrums.forEach(function(spr:FlxSprite)
 						{
@@ -5819,15 +5989,7 @@ class PlayState extends MusicBeatState
 						spr.x += (160 * 0.7) * 2;
 					case 3: 
 						spr.x += (160 * 0.7) * 3;
-					case 4: 
-						spr.alpha = 0;
-					case 5: 
-						spr.alpha = 0;
-					case 6: 
-						spr.alpha = 0;
-					case 7: 
-						spr.alpha = 0;
-					case 8:
+					default: //just use default bro
 						spr.alpha = 0;
 				}
 			case 11: 
@@ -5841,16 +6003,12 @@ class PlayState extends MusicBeatState
 						spr.x += (120 * 0.7) * 1;
 					case 3: 
 						spr.x += (120 * 0.7) * 2;
-					case 4: 
-						spr.alpha = 0;
 					case 5: 
 						spr.x += (120 * 0.7) * 3;
-					case 6: 
-						spr.alpha = 0;
-					case 7: 
-						spr.alpha = 0;
 					case 8:
 						spr.x += (120 * 0.7) * 5;
+					default: 
+						spr.alpha = 0;
 				}
 			case 12: 
 				switch(spr.ID)
@@ -5888,13 +6046,7 @@ class PlayState extends MusicBeatState
 						spr.x += (130 * 0.7) * 4;
 					case 4: 
 						spr.x += (130 * 0.7) * 2;
-					case 5: 
-						spr.alpha = 0;
-					case 6: 
-						spr.alpha = 0;
-					case 7: 
-						spr.alpha = 0;
-					case 8:
+					default: 
 						spr.alpha = 0;
 				}
 			case 14: 
@@ -5912,12 +6064,10 @@ class PlayState extends MusicBeatState
 						spr.x += (110 * 0.7) * 3;
 					case 5: 
 						spr.x += (110 * 0.7) * 4;
-					case 6: 
-						spr.alpha = 0;
-					case 7: 
-						spr.alpha = 0;
 					case 8:
 						spr.x += (110 * 0.7) * 6;
+					default: 
+						spr.alpha = 0;
 				}
 			case 15: 
 				switch(spr.ID)
@@ -5930,8 +6080,6 @@ class PlayState extends MusicBeatState
 						spr.x += (100 * 0.7) * 2;
 					case 3: 
 						spr.x += (100 * 0.7) * 3;
-					case 4: 
-						spr.alpha = 0;
 					case 5: 
 						spr.x += (100 * 0.7) * 4;
 					case 6: 
@@ -5940,27 +6088,15 @@ class PlayState extends MusicBeatState
 						spr.x += (100 * 0.7) * 6;
 					case 8:
 						spr.x += (100 * 0.7) * 7;
+					default: 
+						spr.alpha = 0;
 				}
 			case 16: 
 				switch(spr.ID)
 				{
-					case 0: 
-						spr.alpha = 0;
-					case 1: 
-						spr.alpha = 0;
-					case 2: 
-						spr.alpha = 0;
-					case 3: 
-						spr.alpha = 0;
 					case 4: 
 						spr.x += (160 * 0.7) * 0;
-					case 5: 
-						spr.alpha = 0;
-					case 6: 
-						spr.alpha = 0;
-					case 7: 
-						spr.alpha = 0;
-					case 8:
+					default: 
 						spr.alpha = 0;
 				}
 			case 17: 
@@ -5968,21 +6104,9 @@ class PlayState extends MusicBeatState
 				{
 					case 0: 
 						spr.x += (160 * 0.7) * 0;
-					case 1: 
-						spr.alpha = 0;
-					case 2: 
-						spr.alpha = 0;
 					case 3: 
 						spr.x += (160 * 0.7) * 1;
-					case 4: 
-						spr.alpha = 0;
-					case 5: 
-						spr.alpha = 0;
-					case 6: 
-						spr.alpha = 0;
-					case 7: 
-						spr.alpha = 0;
-					case 8:
+					default: 
 						spr.alpha = 0;
 				}
 			case 18: 
@@ -5990,21 +6114,11 @@ class PlayState extends MusicBeatState
 				{
 					case 0: 
 						spr.x += (160 * 0.7) * 0;
-					case 1: 
-						spr.alpha = 0;
-					case 2: 
-						spr.alpha = 0;
 					case 3: 
 						spr.x += (160 * 0.7) * 2;
 					case 4: 
 						spr.x += (160 * 0.7) * 1;
-					case 5: 
-						spr.alpha = 0;
-					case 6: 
-						spr.alpha = 0;
-					case 7: 
-						spr.alpha = 0;
-					case 8:
+					default: 
 						spr.alpha = 0;
 				}
 		}
@@ -6119,7 +6233,7 @@ class PlayState extends MusicBeatState
 		#end
 
 		
-		if (SONG.song.toLowerCase() == "tutorial" && curStep != stepOfLast && storyDifficulty == 2) //song events
+		/*if (SONG.song.toLowerCase() == "tutorial" && curStep != stepOfLast && storyDifficulty == 2) //song events
 			{
 				switch(curStep) //guide for anyone looking at this, switching mid song needs to be mania + 10
 				{
@@ -6145,7 +6259,7 @@ class PlayState extends MusicBeatState
 						//9 key
 						//switchMania(12);
 				}
-			}
+			}*/
 
 		// yes this updates every step.
 		// yes this is bad

@@ -11,6 +11,8 @@ import polymod.format.ParseRules.TargetSignatureElement;
 #end
 import PlayState;
 
+import ManiaInfo;
+
 using StringTools;
 
 class Note extends FlxSprite
@@ -71,7 +73,7 @@ class Note extends FlxSprite
 	public var parent:Note = null;
 	public var spotInLine:Int = 0;
 	public var sustainActive:Bool = true;
-	public var noteColors:Array<String> = ['purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark'];
+	public var noteColors:Array<String> = ['purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark', '13a', '13b', '13c', '13d'];
 //	public var noteColors:Array<String> = ['purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'orange'];
 	//var pixelnoteColors:Array<String> = ['purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'black', 'dark'];
 
@@ -141,6 +143,27 @@ class Note extends FlxSprite
 				pixelnoteScale = 1;
 				mania = 8;
 			}
+		else if (PlayState.SONG.mania == 20)
+		{
+			swagWidth = 95 * 0.7;
+			noteScale = 0.5;
+			pixelnoteScale = 0.7 / 1.5;
+			
+			swagWidth /= 1.5;
+			noteScale /= 1.5;
+			
+			mania = 20;
+		} else if (PlayState.SONG.mania != 0) {
+			if (PlayState.ThisManiaInfo.keys > 4) {
+				var BasicWidth:Int = PlayState.ThisManiaInfo.keys;
+				if (BasicWidth < 4)
+					BasicWidth = 4;
+				swagWidth = (640) / BasicWidth;
+				noteScale = 2.8 / BasicWidth;
+				pixelnoteScale = 1 / BasicWidth;
+				mania = PlayState.SONG.mania;
+			}
+		}
 
 		if (FlxG.save.data.mania == 1 && PlayStateChangeables.randomNotes)
 			{
@@ -229,7 +252,10 @@ class Note extends FlxSprite
 		if (this.strumTime < 0 )
 			this.strumTime = 0;
 
-		this.noteData = noteData % 9;
+		if (PlayState.ThisManiaInfo.keys > 9)
+			this.noteData = noteData % PlayState.ThisManiaInfo.keys;
+		else
+			this.noteData = noteData % 9;
 		burning = noteType == 1;
 		death = noteType == 2;
 		warning = noteType == 3;
@@ -257,84 +283,56 @@ class Note extends FlxSprite
 				if (isSustainNote && noteType == 0)
 					loadGraphic(Paths.image('noteassets/pixel/arrowEnds'), true, 7, 6);
 
-				for (i in 0...9)
+				for (i in 0...ManiaInfo.PixelNoteSheetWide)
 				{
-					animation.add(noteColors[i] + 'Scroll', [i + 9]); // Normal notes
+					animation.add(noteColors[i] + 'Scroll', [ManiaInfo.PixelArrowNum[noteColors[i]] + ManiaInfo.PixelNoteSheetWide]); // Normal notes
 					animation.add(noteColors[i] + 'hold', [i]); // Holds
-					animation.add(noteColors[i] + 'holdend', [i + 9]); // Tails
+					animation.add(noteColors[i] + 'holdend', [i + ManiaInfo.PixelNoteSheetWide]); // Tails
 				}
-				if (burning)
-					{
-						loadGraphic(Paths.image('noteassets/pixel/firenotes/arrows-pixels'), true, 17, 17);
-						if (isSustainNote && burning)
-							loadGraphic(Paths.image('noteassets/pixel/firenotes/arrowEnds'), true, 7, 6);
-						for (i in 0...9)
-							{
-								animation.add(noteColors[i] + 'Scroll', [i + 9]); // Normal notes
-								animation.add(noteColors[i] + 'hold', [i]); // Holds
-								animation.add(noteColors[i] + 'holdend', [i + 9]); // Tails
-							}
+				var IsType:Bool = false;
+				if (burning) {
+					loadGraphic(Paths.image('noteassets/pixel/firenotes/arrows-pixels'), true, 17, 17);
+					if (isSustainNote)
+						loadGraphic(Paths.image('noteassets/pixel/firenotes/arrowEnds'), true, 7, 6);
+					IsType = true;
+				}
+				else if (death) {
+					loadGraphic(Paths.image('noteassets/pixel/halo/arrows-pixels'), true, 17, 17);
+					if (isSustainNote && death)
+						loadGraphic(Paths.image('noteassets/pixel/halo/arrowEnds'), true, 7, 6);
+					IsType = true;
+				}
+				else if (warning) {
+					loadGraphic(Paths.image('noteassets/pixel/warning/arrows-pixels'), true, 17, 17);
+					if (isSustainNote && warning)
+						loadGraphic(Paths.image('noteassets/pixel/warning/arrowEnds'), true, 7, 6);
+					IsType = true;
+				}
+				else if (angel) {
+					loadGraphic(Paths.image('noteassets/pixel/angel/arrows-pixels'), true, 17, 17);
+					if (isSustainNote && angel)
+						loadGraphic(Paths.image('noteassets/pixel/angel/arrowEnds'), true, 7, 6);
+					IsType = true;
+				}
+				else if (bob) {
+					loadGraphic(Paths.image('noteassets/pixel/bob/arrows-pixels'), true, 17, 17);
+					if (isSustainNote && bob)
+						loadGraphic(Paths.image('noteassets/pixel/bob/arrowEnds'), true, 7, 6);
+					IsType = true;
+				}
+				else if (glitch) {
+					loadGraphic(Paths.image('noteassets/pixel/glitch/arrows-pixels'), true, 17, 17);
+					if (isSustainNote && glitch)
+						loadGraphic(Paths.image('noteassets/pixel/glitch/arrowEnds'), true, 7, 6);
+					IsType = true;
+				}
+				if (IsType) {
+					for (i in 0...ManiaInfo.PixelNoteTypeSheetWide) {
+						animation.add(noteColors[i] + 'Scroll', [ManiaInfo.PixelArrowTypeNum[noteColors[i]]]); // Normal notes
+						animation.add(noteColors[i] + 'hold', [0]); // Holds
+						animation.add(noteColors[i] + 'holdend', [1]); // Tails
 					}
-				else if (death)
-					{
-						loadGraphic(Paths.image('noteassets/pixel/halo/arrows-pixels'), true, 17, 17);
-						if (isSustainNote && death)
-							loadGraphic(Paths.image('noteassets/pixel/halo/arrowEnds'), true, 7, 6);
-						for (i in 0...9)
-							{
-								animation.add(noteColors[i] + 'Scroll', [i + 9]); // Normal notes
-								animation.add(noteColors[i] + 'hold', [i]); // Holds
-								animation.add(noteColors[i] + 'holdend', [i + 9]); // Tails
-							}
-					}
-				else if (warning)
-					{
-						loadGraphic(Paths.image('noteassets/pixel/warning/arrows-pixels'), true, 17, 17);
-						if (isSustainNote && warning)
-							loadGraphic(Paths.image('noteassets/pixel/warning/arrowEnds'), true, 7, 6);
-						for (i in 0...9)
-							{
-								animation.add(noteColors[i] + 'Scroll', [i + 9]); // Normal notes
-								animation.add(noteColors[i] + 'hold', [i]); // Holds
-								animation.add(noteColors[i] + 'holdend', [i + 9]); // Tails
-							}
-					}
-				else if (angel)
-					{
-						loadGraphic(Paths.image('noteassets/pixel/angel/arrows-pixels'), true, 17, 17);
-						if (isSustainNote && angel)
-							loadGraphic(Paths.image('noteassets/pixel/angel/arrowEnds'), true, 7, 6);
-						for (i in 0...9)
-							{
-								animation.add(noteColors[i] + 'Scroll', [i + 9]); // Normal notes
-								animation.add(noteColors[i] + 'hold', [i]); // Holds
-								animation.add(noteColors[i] + 'holdend', [i + 9]); // Tails
-							}
-					}
-				else if (bob)
-					{
-						loadGraphic(Paths.image('noteassets/pixel/bob/arrows-pixels'), true, 17, 17);
-						if (isSustainNote && bob)
-							loadGraphic(Paths.image('noteassets/pixel/bob/arrowEnds'), true, 7, 6);
-						for (i in 0...9)
-							{
-								animation.add(noteColors[i] + 'Scroll', [i + 9]); // Normal notes
-								animation.add(noteColors[i] + 'hold', [i]); // Holds
-								animation.add(noteColors[i] + 'holdend', [i + 9]); // Tails
-							}
-					}
-				else if (glitch)
-					{
-						loadGraphic(Paths.image('noteassets/pixel/glitch/arrows-pixels'), true, 17, 17);
-						if (isSustainNote && glitch)
-							loadGraphic(Paths.image('noteassets/pixel/glitch/arrowEnds'), true, 7, 6);
-						for (i in 0...9)
-							{
-								animation.add(noteColors[i] + 'Scroll', [i + 9]); // Normal notes
-								animation.add(noteColors[i] + 'hold', [i]); // Holds
-								animation.add(noteColors[i] + 'holdend', [i + 9]); // Tails
-							}
-					}
+				}
 
 				
 
@@ -342,67 +340,43 @@ class Note extends FlxSprite
 				updateHitbox();
 			default:
 				frames = Paths.getSparrowAtlas('noteassets/NOTE_assets');
-				for (i in 0...9)
+				for (i in 0...noteColors.length)
 					{
 						animation.addByPrefix(noteColors[i] + 'Scroll', noteColors[i] + '0'); // Normal notes
 						animation.addByPrefix(noteColors[i] + 'hold', noteColors[i] + ' hold piece'); // Hold
 						animation.addByPrefix(noteColors[i] + 'holdend', noteColors[i] + ' hold end'); // Tails
 					}	
-				if (burning || death || warning || angel || bob || glitch)
-					{
-						frames = Paths.getSparrowAtlas('noteassets/notetypes/NOTE_types');
-						switch(noteType)
-						{
-							case 1: 
-								for (i in 0...9)
-									{
-										animation.addByPrefix(noteColors[i] + 'Scroll', 'fire ' + noteColors[i] + '0'); // Normal notes
-										animation.addByPrefix(noteColors[i] + 'hold', 'fire hold piece'); // Hold
-										animation.addByPrefix(noteColors[i] + 'holdend', 'fire hold end'); // Tails
-									}
-							case 2: 
-								for (i in 0...9)
-									{
-										animation.addByPrefix(noteColors[i] + 'Scroll', 'halo ' + noteColors[i] + '0'); // Normal notes
-										animation.addByPrefix(noteColors[i] + 'hold', 'halo hold piece'); // Hold
-										animation.addByPrefix(noteColors[i] + 'holdend', 'halo hold end'); // Tails
-									}
-							case 3: 
-								for (i in 0...9)
-									{
-										animation.addByPrefix(noteColors[i] + 'Scroll', 'warning ' + noteColors[i] + '0'); // Normal notes
-										animation.addByPrefix(noteColors[i] + 'hold', 'warning hold piece'); // Hold
-										animation.addByPrefix(noteColors[i] + 'holdend', 'warning hold end'); // Tails
-									}
-							case 4: 
-								for (i in 0...9)
-									{
-										animation.addByPrefix(noteColors[i] + 'Scroll', 'angel ' + noteColors[i] + '0'); // Normal notes
-										animation.addByPrefix(noteColors[i] + 'hold', 'angel hold piece'); // Hold
-										animation.addByPrefix(noteColors[i] + 'holdend', 'angel hold end'); // Tails
-									}
-							case 6: 
-								for (i in 0...9)
-									{
-										animation.addByPrefix(noteColors[i] + 'Scroll', 'bob ' + noteColors[i] + '0'); // Normal notes
-										animation.addByPrefix(noteColors[i] + 'hold', 'bob hold piece'); // Hold
-										animation.addByPrefix(noteColors[i] + 'holdend', 'bob hold end'); // Tails
-									}
-							case 7:
-								for (i in 0...9)
-									{
-										animation.addByPrefix(noteColors[i] + 'Scroll', 'glitch ' + noteColors[i] + '0'); // Normal notes
-										animation.addByPrefix(noteColors[i] + 'hold', 'glitch hold piece'); // Hold
-										animation.addByPrefix(noteColors[i] + 'holdend', 'glitch hold end'); // Tails
-									}
+				if (noteType != 0) {
+					frames = Paths.getSparrowAtlas('noteassets/notetypes/NOTE_types');
+					var a:String = "";
+					switch(noteType) {
+						case 1: 
+							a = "fire";
+						case 2: 
+							a = "halo";
+						case 3: 
+							a = "warning";
+						case 4: 
+							a = "angel";
+						case 6: 
+							a = "bob";
+						case 7:
+							a = "glitch";
+					}
+					if (a != "") {
+						for (i in 0...noteColors.length) {
+							animation.addByPrefix(noteColors[i] + 'Scroll', a+' ' + noteColors[i] + '0'); // Normal notes
+							animation.addByPrefix(noteColors[i] + 'hold', a+' hold piece'); // Hold
+							animation.addByPrefix(noteColors[i] + 'holdend', a+' hold end'); // Tails
 						}
 					}
+				}
 				setGraphicSize(Std.int(width * noteScale));
 				updateHitbox();
 				antialiasing = true;
 		}
 
-		switch (mania)
+		/*switch (mania)
 		{
 			case 1: 
 				frameN = ['purple', 'green', 'red', 'yellow', 'blue', 'dark'];
@@ -420,8 +394,11 @@ class Note extends FlxSprite
 				frameN = ['purple', 'red'];
 			case 8: 
 				frameN = ['purple', 'white', 'red'];
+			case 20: 
+				frameN = ['yellow', 'violet', 'darkred', 'dark', 'purple', 'blue', 'white', 'green', 'red', 'yellow', 'violet', 'darkred', 'dark'];
 
-		}
+		}*/
+		frameN = PlayState.ThisManiaInfo.arrows;
 
 		x += swagWidth * noteData;
 		animation.play(frameN[noteData] + 'Scroll');
@@ -525,14 +502,14 @@ class Note extends FlxSprite
 									noteData = 3;
 								case 4: 
 									noteData = 2;
-								case 5: 
-									noteData = 0;
 								case 6: 
 									noteData = 1;
 								case 7:
 									noteData = 2;
 								case 8:
 									noteData = 3;
+								default: 
+									noteData = 0;
 							}
 
 						case 11: 
@@ -559,7 +536,7 @@ class Note extends FlxSprite
 							}
 	
 						case 12: 
-							switch (noteColor)
+							/*switch (noteColor)
 							{
 								case 0: 
 									noteData = 0;
@@ -579,7 +556,8 @@ class Note extends FlxSprite
 									noteData = 7;
 								case 8:
 									noteData = 8;
-							}
+							}*/
+							noteData = noteColor; //lol
 						case 13: 
 							switch (noteColor)
 							{
@@ -593,14 +571,14 @@ class Note extends FlxSprite
 									noteData = 3;
 								case 4: 
 									noteData = 4;
-								case 5: 
-									noteData = 0;
 								case 6: 
 									noteData = 1;
 								case 7:
 									noteData = 2;
 								case 8:
 									noteData = 3;
+								default: 
+									noteData = 0;
 							}
 	
 
@@ -659,22 +637,16 @@ class Note extends FlxSprite
 							{
 								case 0: 
 									noteData = 0;
-								case 1: 
-									noteData = 0;
 								case 2: 
 									noteData = 3;
 								case 3: 
 									noteData = 3;
-								case 4: 
-									noteData = 0;
-								case 5: 
-									noteData = 0;
-								case 6: 
-									noteData = 0;
 								case 7:
 									noteData = 3;
 								case 8:
 									noteData = 3;
+								default: 
+									noteData = 0;
 							}
 	
 
@@ -683,22 +655,18 @@ class Note extends FlxSprite
 							{
 								case 0: 
 									noteData = 0;
-								case 1: 
-									noteData = 0;
 								case 2: 
 									noteData = 4;
 								case 3: 
 									noteData = 3;
 								case 4: 
 									noteData = 4;
-								case 5: 
-									noteData = 0;
-								case 6: 
-									noteData = 0;
 								case 7:
 									noteData = 4;
 								case 8:
 									noteData = 3;
+								default: 
+									noteData = 0;
 							}
 	
 

@@ -18,6 +18,16 @@ class Character extends FlxSprite
 	public var holdTimer:Float = 0;
 
 	public var isPlayingAsBF:Bool;
+	
+	public static var available:Array<String> = ['gf', 'gf-christmas', 'gf-car', 'dad', 'spooky', 'mom', 'mom-car', 'monster', 'monster-christmas', 'pico', 'bf', 'bf-christmas', 'bf-car', 'bf-pixel', 'bf-pixel-dead', 'senpai', 'senpai-angry', 'spirit', 'parents-christmas'];
+	
+	public static function CharacterExistCheck(character:String = "bf") {
+		if (!Lambda.has(available, character)) {
+			trace('Unknown character '+character);
+			return 'bf-pixel';
+		}
+		return character;
+	}
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
@@ -31,7 +41,7 @@ class Character extends FlxSprite
 
 		var tex:FlxAtlasFrames;
 		antialiasing = FlxG.save.data.antialiasing;
-
+		
 		switch (curCharacter)
 		{
 			case 'gf':

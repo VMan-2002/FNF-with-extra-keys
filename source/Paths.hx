@@ -4,6 +4,12 @@ import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
+import sys.FileSystem;
+
+#if cpp
+//idk what this is
+import flash.media.Sound;
+#end
 
 class Paths
 {
@@ -95,24 +101,51 @@ class Paths
 		return getPath('music/$key.$SOUND_EXT', MUSIC, library);
 	}
 
-	inline static public function voices(song:String)
+	inline static public function voices(song:String):Sound
 	{
-		var songLowercase = StringTools.replace(song, " ", "-").toLowerCase();
-			switch (songLowercase) {
-				case 'dad-battle': songLowercase = 'dadbattle';
-				case 'philly-nice': songLowercase = 'philly';
-			}
-		return 'songs:assets/songs/${songLowercase}/Voices.$SOUND_EXT';
+		return SongAudio(song, "Voices");
 	}
 
-	inline static public function inst(song:String)
+	inline static public function inst(song:String):Sound
 	{
+		return SongAudio(song, "Inst");
+	}
+	
+	static private function SongAudio(song:String, type:String):Sound {
+		var songLowercase = SolveSong(song);
+		#if cpp
+		//stolen from psych engine lol
+			//var file:Sound = returnSongFile("songs/"+songLowercase + '/Inst.'+SOUND_EXT);
+			var file:Sound = returnSongFile("assets/songs/"+songLowercase+"/"+type+"."+SOUND_EXT);
+			//if(file != null) {
+				trace('has modded audio');
+				return file;
+			//}
+		#else
+		trace('no modded audio');
+		return 'songs:assets/songs/${songLowercase}/$type.$SOUND_EXT';
+		#end
+	}
+	
+	inline static public function SolveSong(song:String) {
 		var songLowercase = StringTools.replace(song, " ", "-").toLowerCase();
-			switch (songLowercase) {
-				case 'dad-battle': songLowercase = 'dadbattle';
-				case 'philly-nice': songLowercase = 'philly';
-			}
-		return 'songs:assets/songs/${songLowercase}/Inst.$SOUND_EXT';
+		switch (songLowercase) {
+			case 'dad-battle': songLowercase = 'dadbattle';
+			case 'philly-nice': songLowercase = 'philly';
+		}
+		return songLowercase;
+	}
+	
+	//also this thing
+	inline static public function returnSongFile(file:String):Sound
+	{
+		if (!StringTools.contains(file, ".")) {
+			file += "."+SOUND_EXT;
+		}
+		if(FileSystem.exists(file)) {
+			return Sound.fromFile(file); //no cache, lol
+		}
+		return null;
 	}
 
 	inline static public function image(key:String, ?library:String)

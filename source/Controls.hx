@@ -1052,10 +1052,10 @@ class Controls extends FlxActionSet
 	 	bindKeys(Control.D1, [K]);
 		bindKeys(Control.R2, [L]);
 
-		bindKeys(Control.UP, [FlxKey.fromString("W"), FlxKey.UP]);
-		bindKeys(Control.DOWN, [FlxKey.fromString("S"), FlxKey.DOWN]);
-		bindKeys(Control.LEFT, [FlxKey.fromString("A"), FlxKey.LEFT]);
-		bindKeys(Control.RIGHT, [FlxKey.fromString("D"), FlxKey.RIGHT]);
+		bindKeys(Control.UP, [FlxKey.fromString("J"), FlxKey.UP]); //dfjk is now default (because yes)
+		bindKeys(Control.DOWN, [FlxKey.fromString("F"), FlxKey.DOWN]);
+		bindKeys(Control.LEFT, [FlxKey.fromString("D"), FlxKey.LEFT]);
+		bindKeys(Control.RIGHT, [FlxKey.fromString("K"), FlxKey.RIGHT]);
 		bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
 		bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 		bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
