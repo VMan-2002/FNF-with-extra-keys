@@ -213,6 +213,10 @@ class ManiaInfo
 				arrowkeys: [37 => 4, 40 => 5, 38 => 6, 39 => 7]
 			};
 			case 22: //21K
+			//putting this here idk who reads this
+			//there's gonna be NO assets from the original 21 keys mod ported in any way
+			//there may be inspiration but nothing will be used directly or indirectly
+			//any new assets will be custom made not related to the 21 keys mod
 			return {
 				keys: 21,
 				//haha 21 keys mod
@@ -231,10 +235,6 @@ class ManiaInfo
 				controls: ["M0", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12", "M13", "M14", "M15", "M16", "M17", "M18", "M19", "M20"], //i hate controls.hx fuck that shit
 				arrowkeys: [-1 => 0] //no arrow keys fuck u
 			};
-			//putting this here idk who reads this
-			//there's gonna be NO assets from the original 21 keys mod ported in any way
-			//there may be inspiration but nothing will be used directly or indirectly
-			//any new assets will be custom made not related to the 21 keys mod
 			case 23: //19K (combined 4k+6k+9k)
 			return {
 				keys: 19,
