@@ -3716,6 +3716,30 @@ class PlayState extends MusicBeatState
 				var index:Int = unspawnNotes.indexOf(dunceNote);
 				unspawnNotes.splice(index, 1);
 			}
+			if (unspawnNotes[0] != null)	
+			{
+				if (unspawnNotes[0].strumTime - Conductor.songPosition < 3000) //backups
+					{
+						var dunceNote:Note = unspawnNotes[0];
+						notes.add(dunceNote);
+	
+						var index:Int = unspawnNotes.indexOf(dunceNote);
+						unspawnNotes.splice(index, 1);
+					}
+				if (unspawnNotes[0] != null)	
+					{
+						if (unspawnNotes[0].strumTime - Conductor.songPosition < 2500) //extra backup lol
+							{
+								var dunceNote:Note = unspawnNotes[0];
+								notes.add(dunceNote);
+				
+								var index:Int = unspawnNotes.indexOf(dunceNote);
+								unspawnNotes.splice(index, 1);
+							}
+					}
+			}
+
+
 		}
 
 		/*switch(mania)
